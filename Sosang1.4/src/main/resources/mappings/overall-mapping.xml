@@ -1,0 +1,992 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="overallDAOmap">
+
+	<select id="getAllCnt" parameterType="adto" resultType="int">
+		select sum(s.str_count) + sum(s.smlr_str_count) from sds10226.storeopen_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.bs = m.m_code 
+		where m.area_name = #{area};
+	</select>
+
+	<select id="getSelectCnt" parameterType="adto" resultType="int">
+		select sum(s.str_count) + sum(s.smlr_str_count) from sds10226.storeopen_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.bs = m.m_code 
+		where m.area_name = #{area}
+		and s.svc_name = #{food};
+	</select>
+
+	<select id="getSales" parameterType="adto" resultType="int">
+		select round(sum(s.thsmon_selng_amt) / 30 / 10000) from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code 
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food};
+	</select>
+
+	<select id="getSalesCnt" parameterType="adto" resultType="int">
+		select round(sum(s.thsmon_selng_co) / 30) from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code 
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food};
+	</select>
+
+	<select id="getResPop" parameterType="adto" resultType="int">
+		select sum(r.total) from sds10226.residencepopulation r
+		left join sds10226.market m 
+		on r.m_code = m.m_code 
+		where m.area_name = #{area}
+		and r.select_year=#{select_year} and r.select_quarter=#{select_quarter};
+	</select>
+
+	<select id="getSalPop" parameterType="adto" resultType="int">
+		select sum(s.total) from sds10226.sallerymanpopulation s
+		left join sds10226.market m 
+		on s.m_code = m.m_code 
+		where m.area_name = #{area}
+		and s.select_year=#{select_year} and s.select_quarter=#{select_quarter};
+	</select>
+
+	<select id="getFloPop" parameterType="adto" resultType="int">
+		select round(sum(f.total) / 90) from sds10226.floatingpopulation f
+		left join sds10226.market m 
+		on f.m_code = m.m_code 
+		where m.area_name = #{area}
+		and f.select_year=#{select_year} and f.select_quarter=#{select_quarter};
+	</select>
+
+	<select id="getFacilCnt" parameterType="adto" resultType="int">
+		select sum(g.Guest_facilities_num) 
+		+ sum(g.Office_num) 
+		+ sum(g.Bank_num) 
+		+ sum(g.Hospital_num) 
+		+ sum(g.Clinic_num) 
+		+ sum(g.DrugStore_num) 
+		+ sum(g.Department_Store)
+		+ sum(g.Supermarket)
+		+ sum(g.Theater)
+		+ sum(g.Accommodation)
+		from sds10226.Guest_facilities g
+		left join sds10226.market m 
+		on g.Business_code = m.m_code 
+		where m.area_name = #{area}
+		and g.Standard_ym_code=#{select_year} and g.Standard_quarter_code=#{select_quarter};
+	</select>
+
+	<select id="getSchoolCnt" parameterType="adto" resultType="int">
+		select sum(g.Kindergarden) 
+		+ sum(g.Elementary_School) 
+		+ sum(g.Middle_School) 
+		+ sum(g.High_School) 
+		+ sum(g.University)sales_all
+		from sds10226.Guest_facilities g
+		left join sds10226.market m 
+		on g.Business_code = m.m_code 
+		where m.area_name = #{area}
+		and g.Standard_ym_code=#{select_year} and g.Standard_quarter_code=#{select_quarter};
+	</select>
+
+	<select id="getTrafficCnt" parameterType="adto" resultType="int">
+		select sum(g.Airport) 
+		+ sum(g.Train_Station) 
+		+ sum(g.Bus_Terminal) 
+		+ sum(g.Subway_Station) 
+		+ sum(g.Bus_Station)
+		from sds10226.Guest_facilities g
+		left join sds10226.market m 
+		on g.Business_code = m.m_code 
+		where m.area_name = #{area}
+		and g.Standard_ym_code=#{select_year} and g.Standard_quarter_code=#{select_quarter};
+	</select>
+	
+	<select id="getGrowth1Condition" parameterType="adto" resultType="double">
+		select  round((sum(s.thsmon_selng_amt) - sum(s2.thsmon_selng_amt))/sum(s2.thsmon_selng_amt) * 100, 2) 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		inner join sds10226.sales_2018_2 s2
+		on s.trdar_cd = s2.trdar_cd
+		and s.svc_induty_cd = s2.svc_induty_cd
+		and s.trdar_se_cd = s2.trdar_se_cd
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		;
+	</select>
+	
+	<select id="getGrowth2Condition" parameterType="adto" resultType="double">
+		select  round(avg((s.thsmon_selng_amt - s2.thsmon_selng_amt)/s2.thsmon_selng_amt * 100), 2) 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		inner join sds10226.sales_2018_2 s2
+		on s.trdar_cd = s2.trdar_cd 
+		and s.svc_induty_cd = s2.svc_induty_cd 
+		and s.trdar_se_cd = s2.trdar_se_cd
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		;
+	</select>
+	
+	<select id="getGrowth3Condition1" parameterType="adto" resultType="double">
+		select sum(s.thsmon_selng_amt) 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		;
+	</select>
+	
+	<select id="getGrowth3Condition2" parameterType="adto" resultType="double">
+		select sum(s.thsmon_selng_amt) 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		;
+	</select>
+	
+	<select id="getGrowth3Condition3" parameterType="adto" resultType="double">
+		select sum(s.thsmon_selng_amt) 
+		from sds10226.sales_${select_year-1}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		;
+	</select>
+	
+	<select id="getGrowth3Condition4" parameterType="adto" resultType="double">
+		select sum(s.thsmon_selng_amt) 
+		from sds10226.sales_${select_year-1}_${select_quarter} s
+		;
+	</select>
+	
+	<select id="getGrowth4Condition1" parameterType="adto" resultType="double">
+		select  round((sum(s.thsmon_selng_amt) - sum(s2.thsmon_selng_amt))/sum(s2.thsmon_selng_amt) * 100, 2) 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		<choose>
+    		<when test="select_quarter lt 3">
+				inner join sds10226.sales_${select_year-1}_${select_quarter+2} s2
+    		</when>
+			<otherwise>
+				inner join sds10226.sales_${select_year}_${select_quarter-2} s2
+    		</otherwise>
+  		</choose>
+		on s.trdar_cd = s2.trdar_cd
+		and s.svc_induty_cd = s2.svc_induty_cd
+		and s.trdar_se_cd = s2.trdar_se_cd
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		;
+	</select>
+	
+	<select id="getGrowth4Condition2" parameterType="adto" resultType="double">
+		select  round((sum(s.thsmon_selng_amt) - sum(s2.thsmon_selng_amt))/sum(s2.thsmon_selng_amt) * 100, 2) 
+		<choose>
+    		<when test="select_quarter lt 3">
+    			from sds10226.sales_${select_year-1}_${select_quarter+2} s
+    		</when>
+			<otherwise>
+    			from sds10226.sales_${select_year}_${select_quarter-2} s
+    		</otherwise>
+  		</choose>
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		inner join sds10226.sales_${select_year-1}_${select_quarter} s2
+		on s.trdar_cd = s2.trdar_cd
+		and s.svc_induty_cd = s2.svc_induty_cd
+		and s.trdar_se_cd = s2.trdar_se_cd
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		;
+	</select>
+	
+	<select id="getStability1Condition1" parameterType="adto" resultType="double">
+		select abs(round(
+		((sum(s.str_count) + sum(s.smlr_str_count)) 
+		- (sum(s2.str_count) + sum(s2.smlr_str_count)))
+		/(sum(s2.str_count) + sum(s2.smlr_str_count)) * 100, 2))
+		from sds10226.storeopen_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.bs = m.m_code
+		<choose>
+    		<when test="select_quarter lt 2">
+				inner join sds10226.storeopen_${select_year-1}_${select_quarter+3} s2
+    		</when>
+			<otherwise>
+				inner join sds10226.storeopen_${select_year}_${select_quarter-1} s2
+    		</otherwise>
+  		</choose>
+		on s.bs = s2.bs
+		and s.svc = s2.svc
+		and s.bs_se = s2.bs_se
+		where m.area_name = #{area}
+		and s.svc_name = #{food}
+		;
+	</select>
+	
+	<select id="getStability1Condition2" parameterType="adto" resultType="double">
+		select abs(round(
+		((sum(s.str_count) + sum(s.smlr_str_count)) 
+		- (sum(s2.str_count) + sum(s2.smlr_str_count)))
+		/(sum(s2.str_count) + sum(s2.smlr_str_count)) * 100, 2))
+		<choose>
+    		<when test="select_quarter lt 2">
+				from sds10226.storeopen_${select_year-1}_${select_quarter+3} s
+    		</when>
+			<otherwise>
+				from sds10226.storeopen_${select_year}_${select_quarter-1} s
+    		</otherwise>
+  		</choose>
+		left join sds10226.market m 
+		on s.bs = m.m_code
+		<choose>
+    		<when test="select_quarter lt 3">
+				inner join sds10226.storeopen_${select_year-1}_${select_quarter+2} s2
+    		</when>
+			<otherwise>
+				inner join sds10226.storeopen_${select_year}_${select_quarter-2} s2
+    		</otherwise>
+  		</choose>
+		on s.bs = s2.bs
+		and s.svc = s2.svc
+		and s.bs_se = s2.bs_se
+		where m.area_name = #{area}
+		and s.svc_name = #{food}
+		;
+	</select>
+	
+	<select id="getStability1Condition3" parameterType="adto" resultType="double">
+		select abs(round(
+		((sum(s.str_count) + sum(s.smlr_str_count)) 
+		- (sum(s2.str_count) + sum(s2.smlr_str_count)))
+		/(sum(s2.str_count) + sum(s2.smlr_str_count)) * 100, 2))
+		<choose>
+    		<when test="select_quarter lt 3">
+				from sds10226.storeopen_${select_year-1}_${select_quarter+2} s
+    		</when>
+			<otherwise>
+				from sds10226.storeopen_${select_year}_${select_quarter-2} s
+    		</otherwise>
+  		</choose>
+		left join sds10226.market m 
+		on s.bs = m.m_code
+		<choose>
+    		<when test="select_quarter lt 4">
+				inner join sds10226.storeopen_${select_year-1}_${select_quarter+1} s2
+    		</when>
+			<otherwise>
+				inner join sds10226.storeopen_${select_year}_${select_quarter-3} s2
+    		</otherwise>
+  		</choose>
+		on s.bs = s2.bs
+		and s.svc = s2.svc
+		and s.bs_se = s2.bs_se
+		where m.area_name = #{area}
+		and s.svc_name = #{food}
+		;
+	</select>
+	
+	<select id="getStability1Condition4" parameterType="adto" resultType="double">
+		select abs(round(
+		((sum(s.str_count) + sum(s.smlr_str_count)) 
+		- (sum(s2.str_count) + sum(s2.smlr_str_count)))
+		/(sum(s2.str_count) + sum(s2.smlr_str_count)) * 100, 2))
+		<choose>
+    		<when test="select_quarter lt 4">
+				from sds10226.storeopen_${select_year-1}_${select_quarter+1} s
+    		</when>
+			<otherwise>
+				from sds10226.storeopen_${select_year}_${select_quarter-3} s
+    		</otherwise>
+  		</choose>
+		left join sds10226.market m 
+		on s.bs = m.m_code
+		inner join sds10226.storeopen_${select_year-1}_${select_quarter} s2
+		on s.bs = s2.bs
+		and s.svc = s2.svc
+		and s.bs_se = s2.bs_se
+		where m.area_name = #{area}
+		and s.svc_name = #{food}
+		;
+	</select>
+	
+	<select id="getStability2Condition1" parameterType="adto" resultType="double">
+		select abs(round((sum(s.thsmon_selng_amt) - sum(s2.thsmon_selng_amt))/sum(s2.thsmon_selng_amt) * 100, 2))
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		<choose>
+    		<when test="select_quarter lt 2">
+				inner join sds10226.sales_${select_year-1}_${select_quarter+3} s2
+    		</when>
+			<otherwise>
+				inner join sds10226.sales_${select_year}_${select_quarter-1} s2
+    		</otherwise>
+  		</choose>
+		on s.trdar_cd = s2.trdar_cd
+		and s.svc_induty_cd = s2.svc_induty_cd
+		and s.trdar_se_cd = s2.trdar_se_cd
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		;
+	</select>
+	
+	<select id="getStability2Condition2" parameterType="adto" resultType="double">
+		select abs(round((sum(s.thsmon_selng_amt) - sum(s2.thsmon_selng_amt))/sum(s2.thsmon_selng_amt) * 100, 2))
+		<choose>
+    		<when test="select_quarter lt 2">
+				from sds10226.sales_${select_year-1}_${select_quarter+3} s
+    		</when>
+			<otherwise>
+				from sds10226.sales_${select_year}_${select_quarter-1} s
+    		</otherwise>
+  		</choose>
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		<choose>
+    		<when test="select_quarter lt 3">
+				inner join sds10226.sales_${select_year-1}_${select_quarter+2} s2
+    		</when>
+			<otherwise>
+				inner join sds10226.sales_${select_year}_${select_quarter-2} s2
+    		</otherwise>
+  		</choose>
+		on s.trdar_cd = s2.trdar_cd
+		and s.svc_induty_cd = s2.svc_induty_cd
+		and s.trdar_se_cd = s2.trdar_se_cd
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		;
+	</select>
+	
+	<select id="getStability2Condition3" parameterType="adto" resultType="double">
+		select abs(round((sum(s.thsmon_selng_amt) - sum(s2.thsmon_selng_amt))/sum(s2.thsmon_selng_amt) * 100, 2))
+		<choose>
+    		<when test="select_quarter lt 3">
+				from sds10226.sales_${select_year-1}_${select_quarter+2} s
+    		</when>
+			<otherwise>
+				from sds10226.sales_${select_year}_${select_quarter-2} s
+    		</otherwise>
+  		</choose>
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		<choose>
+    		<when test="select_quarter lt 4">
+				inner join sds10226.sales_${select_year-1}_${select_quarter+1} s2
+    		</when>
+			<otherwise>
+				inner join sds10226.sales_${select_year}_${select_quarter-3} s2
+    		</otherwise>
+  		</choose>
+		on s.trdar_cd = s2.trdar_cd
+		and s.svc_induty_cd = s2.svc_induty_cd
+		and s.trdar_se_cd = s2.trdar_se_cd
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		;
+	</select>
+	
+	<select id="getStability2Condition4" parameterType="adto" resultType="double">
+		select abs(round((sum(s.thsmon_selng_amt) - sum(s2.thsmon_selng_amt))/sum(s2.thsmon_selng_amt) * 100, 2))
+		<choose>
+    		<when test="select_quarter lt 4">
+				from sds10226.sales_${select_year-1}_${select_quarter+1} s
+    		</when>
+			<otherwise>
+				from sds10226.sales_${select_year}_${select_quarter-3} s
+    		</otherwise>
+  		</choose>
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		inner join sds10226.sales_${select_year-1}_${select_quarter} s2
+		on s.trdar_cd = s2.trdar_cd
+		and s.svc_induty_cd = s2.svc_induty_cd
+		and s.trdar_se_cd = s2.trdar_se_cd
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		;
+	</select>
+	
+	<select id="getStability3Condition1" parameterType="adto" resultType="double">
+		select avg(i.avg_operation_month) from sds10226.market_change_indicator i
+		left join sds10226.market m 
+		on i.area_code = m.area_code
+		where m.area_name = #{area}
+		and i.select_year=#{select_year} and i.select_quarter=#{select_quarter}
+		;
+	</select>
+	
+	<select id="getStability3Condition2" parameterType="adto" resultType="double">
+		select avg(i.avg_operation_month) from sds10226.market_change_indicator i
+		left join sds10226.market m 
+		on i.area_code = m.area_code
+		where i.select_year=#{select_year} and i.select_quarter=#{select_quarter}
+		;
+	</select>
+	
+	<select id="getStability4Condition1" parameterType="adto" resultType="double">
+		select avg(s.close_rt) 
+		from sds10226.storeopen_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.bs = m.m_code
+		where m.area_name = #{area}
+		and s.svc_name = #{food}
+		;
+	</select>
+	
+	<select id="getStability4Condition2" parameterType="adto" resultType="double">
+		select avg(s.close_rt) 
+		<choose>
+    		<when test="select_quarter lt 2">
+				from sds10226.storeopen_${select_year-1}_${select_quarter+3} s
+    		</when>
+			<otherwise>
+				from sds10226.storeopen_${select_year}_${select_quarter-1} s
+    		</otherwise>
+  		</choose>
+		left join sds10226.market m 
+		on s.bs = m.m_code
+		where m.area_name = #{area}
+		and s.svc_name = #{food}
+		;
+	</select>
+	
+	<select id="getStability4Condition3" parameterType="adto" resultType="double">
+		select avg(s.close_rt) 
+		<choose>
+    		<when test="select_quarter lt 3">
+				from sds10226.storeopen_${select_year-1}_${select_quarter+2} s
+    		</when>
+			<otherwise>
+				from sds10226.storeopen_${select_year}_${select_quarter-2} s
+    		</otherwise>
+  		</choose>
+		left join sds10226.market m 
+		on s.bs = m.m_code
+		where m.area_name = #{area}
+		and s.svc_name = #{food}
+		;
+	</select>
+	
+	<select id="getStability4Condition4" parameterType="adto" resultType="double">
+		select avg(s.close_rt) 
+		<choose>
+    		<when test="select_quarter lt 4">
+				from sds10226.storeopen_${select_year-1}_${select_quarter+1} s
+    		</when>
+			<otherwise>
+				from sds10226.storeopen_${select_year}_${select_quarter-3} s
+    		</otherwise>
+  		</choose>
+		left join sds10226.market m 
+		on s.bs = m.m_code
+		where m.area_name = #{area}
+		and s.svc_name = #{food}
+		;
+	</select>
+	
+	<select id="getBusinessAbility1Condition1" parameterType="adto" resultType="double">
+		select sum(s.thsmon_selng_amt) 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		;
+	</select>
+	
+	<select id="getBusinessAbility1Condition2" parameterType="adto" resultType="double">
+		select sum(s.thsmon_selng_amt) 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		;
+	</select>
+	
+	<select id="getBusinessAbility2Condition1" parameterType="adto" resultType="double">
+		select sum(s.str_count) + sum(s.smlr_str_count)
+		from sds10226.storeopen_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.bs = m.m_code
+		where m.area_name = #{area}
+		and s.svc_name = #{food}
+		;
+	</select>
+	
+	<select id="getBusinessAbility2Condition2" parameterType="adto" resultType="double">
+		select sum(s.str_count) + sum(s.smlr_str_count)
+		from sds10226.storeopen_${select_year}_${select_quarter} s
+		;
+	</select>
+	
+	<select id="getBusinessAbility3Condition1" parameterType="adto" resultType="double">
+		select round(std(s.thsmon_selng_amt)) 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		;
+	</select>
+	
+	<select id="getBusinessAbility3Condition2" parameterType="adto" resultType="double">
+		select round(std(s.thsmon_selng_amt)) 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		;
+	</select>
+	
+	<select id="getBusinessAbility4Condition1" parameterType="adto" resultType="double">
+		select round(std(t))
+		from
+		(select sum(s.thsmon_selng_amt) as t 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		UNION ALL
+		select sum(s.thsmon_selng_amt) as t 
+		<choose>
+    		<when test="select_quarter lt 2">
+				from sds10226.sales_${select_year-1}_${select_quarter+3} s
+    		</when>
+			<otherwise>
+				from sds10226.sales_${select_year}_${select_quarter-1} s
+    		</otherwise>
+  		</choose>
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		UNION ALL 
+		select sum(s.thsmon_selng_amt) as t 
+		<choose>
+    		<when test="select_quarter lt 3">
+				from sds10226.sales_${select_year-1}_${select_quarter+2} s
+    		</when>
+			<otherwise>
+				from sds10226.sales_${select_year}_${select_quarter-2} s
+    		</otherwise>
+  		</choose>
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		UNION ALL
+		select sum(s.thsmon_selng_amt) as t 
+		<choose>
+    		<when test="select_quarter lt 4">
+				from sds10226.sales_${select_year-1}_${select_quarter+1} s
+    		</when>
+			<otherwise>
+				from sds10226.sales_${select_year}_${select_quarter-3} s
+    		</otherwise>
+  		</choose>
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		) t;
+	</select>
+	
+	<select id="getBusinessAbility4Condition2" parameterType="adto" resultType="double">
+		select round(std(t))
+		from
+		(select avg(g) as t
+		from
+		(select sum(s.thsmon_selng_amt) as g 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		group by s.svc_induty_cd_nm, m.area_name) as g
+		UNION ALL
+		select avg(g) as t
+		from
+		(select sum(s.thsmon_selng_amt) as g  
+		<choose>
+    		<when test="select_quarter lt 2">
+				from sds10226.sales_${select_year-1}_${select_quarter+3} s
+    		</when>
+			<otherwise>
+				from sds10226.sales_${select_year}_${select_quarter-1} s
+    		</otherwise>
+  		</choose>
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		group by s.svc_induty_cd_nm, m.area_name) as g
+		UNION ALL 
+		select avg(g) as t
+		from
+		(select sum(s.thsmon_selng_amt) as g  
+		<choose>
+    		<when test="select_quarter lt 3">
+				from sds10226.sales_${select_year-1}_${select_quarter+2} s
+    		</when>
+			<otherwise>
+				from sds10226.sales_${select_year}_${select_quarter-2} s
+    		</otherwise>
+  		</choose>
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		group by s.svc_induty_cd_nm, m.area_name) as g
+		UNION ALL
+		select avg(g) as t
+		from
+		(select sum(s.thsmon_selng_amt) as g  
+		<choose>
+    		<when test="select_quarter lt 4">
+				from sds10226.sales_${select_year-1}_${select_quarter+1} s
+    		</when>
+			<otherwise>
+				from sds10226.sales_${select_year}_${select_quarter-3} s
+    		</otherwise>
+  		</choose>
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		group by s.svc_induty_cd_nm, m.area_name) as g
+		) t;
+	</select>
+	
+	<select id="getBusinessAbility5Condition1" parameterType="adto" resultType="double">
+		select round(std(t))
+		from
+		(select sum(s.mon_selng_amt) as t 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		UNION ALL
+		select sum(s.tues_selng_amt) as t 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		UNION ALL 
+		select sum(s.wed_selng_amt) as t 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		UNION ALL
+		select sum(s.thur_selng_amt) as t 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		UNION ALL
+		select sum(s.fri_selng_amt) as t 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		UNION ALL
+		select sum(s.sat_selng_amt) as t 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		UNION ALL
+		select sum(s.sun_selng_amt) as t 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		) t;
+	</select>
+	
+	<select id="getBusinessAbility5Condition2" parameterType="adto" resultType="double">
+		select round(std(t))
+		from
+		(select avg(g) as t
+		from
+		(select sum(s.mon_selng_amt) as g 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		group by s.svc_induty_cd_nm, m.area_name) as g
+		UNION ALL
+		select avg(g) as t
+		from
+		(select sum(s.tues_selng_amt) as g 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		group by s.svc_induty_cd_nm, m.area_name) as g
+		UNION ALL 
+		select avg(g) as t
+		from
+		(select sum(s.wed_selng_amt) as g 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		group by s.svc_induty_cd_nm, m.area_name) as g
+		UNION ALL
+		select avg(g) as t
+		from
+		(select sum(s.thur_selng_amt) as g 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		group by s.svc_induty_cd_nm, m.area_name) as g
+		UNION ALL
+		select avg(g) as t
+		from
+		(select sum(s.fri_selng_amt) as g 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		group by s.svc_induty_cd_nm, m.area_name) as g
+		UNION ALL
+		select avg(g) as t
+		from
+		(select sum(s.sat_selng_amt) as g 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		group by s.svc_induty_cd_nm, m.area_name) as g
+		UNION ALL
+		select avg(g) as t
+		from
+		(select sum(s.sun_selng_amt) as g 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		group by s.svc_induty_cd_nm, m.area_name) as g
+		) t;
+	</select>
+	
+	<select id="getBusinessAbility6Condition1" parameterType="adto" resultType="double">
+		select round(std(t))
+		from
+		(select sum(s.tmzon_00_06_selng_amt) as t 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		UNION ALL
+		select sum(s.tmzon_06_11_selng_amt) as t 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		UNION ALL 
+		select sum(s.tmzon_11_14_selng_amt) as t 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		UNION ALL
+		select sum(s.tmzon_14_17_selng_amt) as t 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		UNION ALL
+		select sum(s.tmzon_17_21_selng_amt) as t 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		UNION ALL
+		select sum(s.tmzon_21_24_selng_amt) as t 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		where m.area_name = #{area}
+		and s.svc_induty_cd_nm = #{food}
+		) t;
+	</select>
+	
+	<select id="getBusinessAbility6Condition2" parameterType="adto" resultType="double">
+		select round(std(t))
+		from
+		(select avg(g) as t
+		from
+		(select sum(s.tmzon_00_06_selng_amt) as g 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		group by s.svc_induty_cd_nm, m.area_name) as g
+		UNION ALL
+		select avg(g) as t
+		from
+		(select sum(s.tmzon_06_11_selng_amt) as g 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		group by s.svc_induty_cd_nm, m.area_name) as g
+		UNION ALL 
+		select avg(g) as t
+		from
+		(select sum(s.tmzon_11_14_selng_amt) as g 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		group by s.svc_induty_cd_nm, m.area_name) as g
+		UNION ALL
+		select avg(g) as t
+		from
+		(select sum(s.tmzon_14_17_selng_amt) as g 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		group by s.svc_induty_cd_nm, m.area_name) as g
+		UNION ALL
+		select avg(g) as t
+		from
+		(select sum(s.tmzon_17_21_selng_amt) as g 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		group by s.svc_induty_cd_nm, m.area_name) as g
+		UNION ALL
+		select avg(g) as t
+		from
+		(select sum(s.tmzon_21_24_selng_amt) as g 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		group by s.svc_induty_cd_nm, m.area_name) as g
+		) t;
+	</select>
+	
+	<select id="getPurchasingPower1Condition1" parameterType="adto" resultType="double">
+		select round(sum(s.thsmon_selng_amt)) 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code 
+		where m.area_name = #{area}
+		;
+	</select>
+	
+	<select id="getPurchasingPower1Condition2" parameterType="adto" resultType="double">
+		select round(avg(g))
+		from
+		(select sum(s.thsmon_selng_amt) as g 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		group by m.area_name) as g
+		;
+	</select>
+	
+	<select id="getPurchasingPower2Condition1" parameterType="adto" resultType="double">
+		select round(sum(s.thsmon_selng_amt)/sum(s.thsmon_selng_co))
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code 
+		where m.area_name = #{area}
+		;
+	</select>
+	
+	<select id="getPurchasingPower2Condition2" parameterType="adto" resultType="double">
+		select round(sum(s.thsmon_selng_amt)/sum(s.thsmon_selng_co)) 
+		from sds10226.sales_${select_year}_${select_quarter} s
+		left join sds10226.market m 
+		on s.trdar_cd = m.m_code
+		;
+	</select>
+	
+	<select id="getPurchasingPower3Condition1" parameterType="adto" resultType="double">
+		select round(sum(ie.total_ex)) 
+		from sds10226.marketaround_income_expend ie
+		left join sds10226.market m 
+		on ie.m_code = m.m_code 
+		where m.area_name = #{area}
+		and ie.select_year=#{select_year} and ie.select_quarter=#{select_quarter}
+		;
+	</select>
+	
+	<select id="getPurchasingPower3Condition2" parameterType="adto" resultType="double">
+		select round(avg(g))
+		from
+		(select round(sum(ie.total_ex)) as g 
+		from sds10226.marketaround_income_expend ie
+		left join sds10226.market m 
+		on ie.m_code = m.m_code
+		where ie.select_year=#{select_year} and ie.select_quarter=#{select_quarter}
+		group by m.area_name) as g
+		;
+	</select>
+	
+	<select id="getHouseArrest1Condition1" parameterType="adto" resultType="double">
+		select round(sum(f.total) / 90) 
+		from sds10226.floatingpopulation f
+		left join sds10226.market m 
+		on f.m_code = m.m_code 
+		where m.area_name = #{area}
+		and f.select_year=#{select_year} and f.select_quarter=#{select_quarter}
+		;
+	</select>
+	
+	<select id="getHouseArrest1Condition2" parameterType="adto" resultType="double">
+		select round(avg(g))
+		from
+		(select round(sum(f.total) / 90) as g 
+		from sds10226.floatingpopulation f 
+		left join sds10226.market m 
+		on f.m_code = m.m_code
+		where f.select_year=#{select_year} and f.select_quarter=#{select_quarter}
+		group by m.area_name) as g
+		;
+	</select>
+	
+	<select id="getHouseArrest2Condition1" parameterType="adto" resultType="double">
+		select sum(r.total) 
+		from sds10226.residencepopulation r
+		left join sds10226.market m 
+		on r.m_code = m.m_code 
+		where m.area_name = #{area}
+		and r.select_year=#{select_year} and r.select_quarter=#{select_quarter}
+		;
+	</select>
+	
+	<select id="getHouseArrest2Condition2" parameterType="adto" resultType="double">
+		select round(avg(g))
+		from
+		(select sum(r.total) as g 
+		from sds10226.residencepopulation r 
+		left join sds10226.market m 
+		on r.m_code = m.m_code
+		where r.select_year=#{select_year} and r.select_quarter=#{select_quarter}
+		group by m.area_name) as g
+		;
+	</select>
+	
+	<select id="getHouseArrest3Condition1" parameterType="adto" resultType="double">
+		select sum(s.total) from sds10226.sallerymanpopulation s
+		left join sds10226.market m 
+		on s.m_code = m.m_code 
+		where m.area_name = #{area}
+		and s.select_year=#{select_year} and s.select_quarter=#{select_quarter}
+		;
+	</select>
+	
+	<select id="getHouseArrest3Condition2" parameterType="adto" resultType="double">
+		select round(avg(g))
+		from
+		(select sum(s.total) as g from sds10226.sallerymanpopulation s 
+		left join sds10226.market m 
+		on s.m_code = m.m_code
+		where s.select_year=#{select_year} and s.select_quarter=#{select_quarter}
+		group by m.area_name) as g
+		;
+	</select>
+
+</mapper>

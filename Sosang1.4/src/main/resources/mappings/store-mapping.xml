@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC 	"-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.store.mappers.store">
+	
+	<select id="selectStrFif" parameterType="adto" resultType="storeDTO">
+		select (sum(s2.str_count) + sum(s1.str_count))/2 as str_count, 
+		(sum(s2.smlr_str_count) + sum(s1.smlr_str_count))/2 as smlr_str_count, 
+		(avg(s2.open_rt) + avg(s1.open_rt))/2 as open_rt, 
+		(avg(s2.close_rt) + avg(s1.close_rt))/2 as close_rt 
+		from storeopen_2019_2 s2 
+		join storeopen_2019_1 s1 
+		where s2.svc_name = #{food} and s2.bs in(select m_code from market where area_name = #{area})
+		and s2.svc_name = s1.svc_name and s2.bs = s1.bs
+	</select>
+	<select id="selectStrFour" parameterType="adto" resultType="storeDTO">
+		select (sum(s2.str_count) + sum(s1.str_count))/2 as str_count, 
+		(sum(s2.smlr_str_count) + sum(s1.smlr_str_count))/2 as smlr_str_count, 
+		(avg(s2.open_rt) + avg(s1.open_rt))/2 as open_rt, 
+		(avg(s2.close_rt) + avg(s1.close_rt))/2 as close_rt 
+		from storeopen_2018_4 s2 
+		join storeopen_2018_3 s1 
+		where s2.svc_name = #{food} and s2.bs in(select m_code from market where area_name = #{area})
+		and s2.svc_name = s1.svc_name and s2.bs = s1.bs
+	</select>
+	<select id="selectStrThi" parameterType="adto" resultType="storeDTO">
+		select (sum(s2.str_count) + sum(s1.str_count))/2 as str_count, 
+		(sum(s2.smlr_str_count) + sum(s1.smlr_str_count))/2 as smlr_str_count, 
+		(avg(s2.open_rt) + avg(s1.open_rt))/2 as open_rt, 
+		(avg(s2.close_rt) + avg(s1.close_rt))/2 as close_rt 
+		from storeopen_2018_2 s2 
+		join storeopen_2018_1 s1 
+		where s2.svc_name = #{food} and s2.bs in(select m_code from market where area_name = #{area})
+		and s2.svc_name = s1.svc_name and s2.bs = s1.bs
+	</select>
+	<select id="selectStrSec" parameterType="adto" resultType="storeDTO">
+		select (sum(s2.str_count) + sum(s1.str_count))/2 as str_count, 
+		(sum(s2.smlr_str_count) + sum(s1.smlr_str_count))/2 as smlr_str_count, 
+		(avg(s2.open_rt) + avg(s1.open_rt))/2 as open_rt, 
+		(avg(s2.close_rt) + avg(s1.close_rt))/2 as close_rt 
+		from storeopen_2017_4 s2 
+		join storeopen_2017_3 s1 
+		where s2.svc_name = #{food} and s2.bs in(select m_code from market where area_name = #{area})
+		and s2.svc_name = s1.svc_name and s2.bs = s1.bs
+	</select>
+	<select id="selectStrFir" parameterType="adto" resultType="storeDTO">
+		select (sum(s2.str_count) + sum(s1.str_count))/2 as str_count, 
+		(sum(s2.smlr_str_count) + sum(s1.smlr_str_count))/2 as smlr_str_count, 
+		(avg(s2.open_rt) + avg(s1.open_rt))/2 as open_rt, 
+		(avg(s2.close_rt) + avg(s1.close_rt))/2 as close_rt 
+		from storeopen_2017_2 s2 
+		join storeopen_2017_1 s1 
+		where s2.svc_name = #{food} and s2.bs in(select m_code from market where area_name = #{area})
+		and s2.svc_name = s1.svc_name and s2.bs = s1.bs
+	</select>
+	
+	<update id="updateStrFif" parameterType="storeDTO">
+		update storeopen set str_count = #{str_count} , smlr_str_count = #{smlr_str_count}, 
+		open = #{open_rt}, close = #{close_rt} where cnt = 5
+	</update>
+	<update id="updateStrFour" parameterType="storeDTO">
+		update storeopen set str_count = #{str_count} , smlr_str_count = #{smlr_str_count}, 
+		open = #{open_rt}, close = #{close_rt} where cnt = 4
+	</update>
+	<update id="updateStrThi" parameterType="storeDTO">
+		update storeopen set str_count = #{str_count} , smlr_str_count = #{smlr_str_count}, 
+		open = #{open_rt}, close = #{close_rt} where cnt = 3
+	</update>
+	<update id="updateStrSec" parameterType="storeDTO">
+		update storeopen set str_count = #{str_count} , smlr_str_count = #{smlr_str_count}, 
+		open = #{open_rt}, close = #{close_rt} where cnt = 2
+	</update>
+	<update id="updateStrFir" parameterType="storeDTO">
+		update storeopen set str_count = #{str_count} , smlr_str_count = #{smlr_str_count}, 
+		open = #{open_rt}, close = #{close_rt} where cnt = 1
+	</update>
+	
+	<select id="selectStrList" resultType="resultDTO">
+		select part, str_count, smlr_str_count, open, close from storeopen
+	</select>
+	
+</mapper>

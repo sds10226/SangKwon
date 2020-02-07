@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="popDAOmap">
+
+	<select id="getQuarter_FloatingData" parameterType="adto" resultType="qfdto">
+		select round(avg(case when fp.select_year=2017 and fp.select_quarter=1 then fp.total end)) as 'q1_y2017',
+			   round(avg(case when fp.select_year=2017 and fp.select_quarter=2 then fp.total end)) as 'q2_y2017',
+			   round(avg(case when fp.select_year=2017 and fp.select_quarter=3 then fp.total end)) as 'q3_y2017',
+			   round(avg(case when fp.select_year=2017 and fp.select_quarter=4 then fp.total end)) as 'q4_y2017',
+		       round(avg(case when fp.select_year=2018 and fp.select_quarter=1 then fp.total end)) as 'q1_y2018',
+		       round(avg(case when fp.select_year=2018 and fp.select_quarter=2 then fp.total end)) as 'q2_y2018',
+		       round(avg(case when fp.select_year=2018 and fp.select_quarter=3 then fp.total end)) as 'q3_y2018',
+		       round(avg(case when fp.select_year=2018 and fp.select_quarter=4 then fp.total end)) as 'q4_y2018',
+		       round(avg(case when fp.select_year=2019 and fp.select_quarter=1 then fp.total end)) as 'q1_y2019',
+		       round(avg(case when fp.select_year=2019 and fp.select_quarter=2 then fp.total end)) as 'q2_y2019'
+		       from floatingpopulation as fp
+		       left join market as mk 
+		       on mk.m_code=fp.m_code 
+		       where mk.area_name=#{area} and fp.select_year >= 2017
+	</select>
+	<select id="getGenderAndAge_FloatingData" parameterType="adto" resultType="gafdto">
+		select round(sum(fp.total)/90) as total, 
+		       round(sum(fp.total_male)/90) as total_male,
+		       round(sum(fp.total_female)/90) as total_female,
+		       round(sum(fp.total_10)/90) as total_10,
+		       round(sum(fp.total_20)/90) as total_20,
+		       round(sum(fp.total_30)/90) as total_30,
+		       round(sum(fp.total_40)/90) as total_40,
+		       round(sum(fp.total_50)/90) as total_50,
+		       round(sum(fp.total_60)/90) as total_60
+		       from floatingpopulation as fp
+		       left join market as mk 
+		       on mk.m_code=fp.m_code 
+		       where fp.select_year=#{select_year} and fp.select_quarter=#{select_quarter} and mk.area_name=#{area}
+	</select>
+	<select id="getTime_FloatingData" parameterType="adto" resultType="tfdto">
+		select round(sum(fp.total)/90) as total, 
+		       round(sum(fp.total_time1)/90) as total_time1,
+		       round(sum(fp.total_time2)/90) as total_time2,
+		       round(sum(fp.total_time3)/90) as total_time3,
+		       round(sum(fp.total_time4)/90) as total_time4,
+		       round(sum(fp.total_time5)/90) as total_time5,
+		       round(sum(fp.total_time6)/90) as total_time6
+		       from floatingpopulation as fp
+		       left join market as mk 
+		       on mk.m_code=fp.m_code 
+		       where fp.select_year=#{select_year} and fp.select_quarter=#{select_quarter} and mk.area_name=#{area}
+	</select>
+	<select id="getWeekly_FloatingData" parameterType="adto" resultType="wfdto">
+		select round(sum(fp.total_sat+fp.total_sun)/90) as total_weekend, 
+		       round(sum(fp.total_mon+fp.total_tue+fp.total_wed+fp.total_thu+fp.total_fri)/90) as total_week,
+		       round(sum(fp.total_sun)/90) as total_sun,
+		       round(sum(fp.total_mon)/90) as total_mon,
+		       round(sum(fp.total_tue)/90) as total_tue,
+		       round(sum(fp.total_wed)/90) as total_wed,
+		       round(sum(fp.total_thu)/90) as total_thu,
+		       round(sum(fp.total_fri)/90) as total_fri,
+		       round(sum(fp.total_sat)/90) as total_sat
+		       from floatingpopulation as fp
+		       left join market as mk 
+		       on mk.m_code=fp.m_code 
+		       where fp.select_year=#{select_year} and fp.select_quarter=#{select_quarter} and mk.area_name=#{area}
+	</select>
+	<select id="getResidenceData" parameterType="adto" resultType="rdto">
+		select round(sum(rp.family_total)) as family_total, 
+			   round(sum(rp.total)) as total, 
+		       round(sum(rp.total_male)) as total_male,
+		       round(sum(rp.total_female)) as total_female,
+		       round(sum(rp.total_10)) as total_10,
+		       round(sum(rp.total_20)) as total_20,
+		       round(sum(rp.total_30)) as total_30,
+		       round(sum(rp.total_40)) as total_40,
+		       round(sum(rp.total_50)) as total_50,
+		       round(sum(rp.total_60)) as total_60
+		       from residencepopulation as rp
+		       left join market as mk 
+		       on mk.m_code=rp.m_code 
+		       where rp.select_year=#{select_year} and rp.select_quarter=#{select_quarter} and mk.area_name=#{area}
+	</select>
+	<select id="getSalleryManData" parameterType="adto" resultType="smdto">
+		select round(sum(sp.total)/45) as total, 
+			   round(sum(sp.total_male)/45) as total_male, 
+		       round(sum(sp.total_female)/45) as total_female, 
+		       round(sum(sp.total_10)/45) as total_10, 
+		       round(sum(sp.total_20)/45) as total_20, 
+		       round(sum(sp.total_30)/45) as total_30, 
+		       round(sum(sp.total_40)/45) as total_40,
+		       round(sum(sp.total_50)/45) as total_50,
+		       round(sum(sp.total_60)/45) as total_60
+		       from sallerymanpopulation as sp 
+		       left join market as mk 
+		       on mk.m_code=sp.m_code 
+		       where sp.select_year=#{select_year} and sp.select_quarter=#{select_quarter} and mk.area_name=#{area}
+	</select>
+
+</mapper>

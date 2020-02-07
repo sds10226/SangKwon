@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css?family=Josefin+Sans:400,400i,600,600i,700,700i&display=swap');
+
+@font-face { font-family: 'KBIZHanmaumGothic'; 
+	src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/KBIZHanmaumGothic.woff') 
+	format('woff'); font-weight: normal; font-style: normal; }
+
+*{
+	margin:0;
+	padding:0;
+	box-sizing: border-box;
+	outline:none;
+	text-decoration:none;
+	font-family: 'KBIZHanmaumGothic', 'Josefin Sans', sans-serif;
+
+}
+
+body {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	z-index: -1000;
+	background:#f1c40f;
+
+}
+.memberChangeInfoForm{
+	margin: 0 auto; 
+	width: 450px
+}
+.wrapper{
+	max-width: 450px;
+	margin-top: 100px;
+	margin-bottom: 100px;
+	background: #fff;
+	padding: 38px 45px;
+	border-radius:20px;
+	
+}	
+.wrapper .logoSpace img{ /*왜안먹지*/
+	width: 100%;
+    padding: 0%;
+}
+.wrapper .title{
+	margin-bottom:25px;
+	text-align:center;
+	font-size:35px;
+	font-weight: bold;
+	color: #785655;
+	
+}
+
+.memberChangeInfoForm .wrapper .input_field{
+	position: relative;
+	margin-bottom: 12px;
+
+}
+.memberChangeInfoForm .wrapper .input_field input{
+	width: 100%;
+	height: 46px;
+	padding:12px;
+	padding-left: 40px;
+	border: none;
+	background: #eeeeee;
+	font-size: 15px;
+}
+.memberChangeInfoForm .wrapper .input_field> button{
+	
+	width: 18%;
+	height: 46px;
+	display: inline-block;  
+	background-color:#f1c40f;
+	border: none;
+    color: #785655;
+	text-align: center; 
+	font-size: 15px;
+	padding: 11px; 
+	cursor: pointer; 
+	margin: 0px;
+}
+
+.memberChangeInfoForm .wrapper .btn{ /*SUBMIT BUTTON 주변*/
+	background-color:#f1c40f;
+	width: 70%;
+	margin: 23px auto 0;
+	padding: 0px;
+	text-align: center;
+	border-radius: 25px;
+	font-size:25 ;
+	margin-top: 30px;
+	cursor: pointer; 
+}
+.memberChangeInfoForm .wrapper .btn input:hover {
+	font-size:larger;
+	color: 785655;
+	
+}
+.wrapper .btn a{
+	color: #785655;
+}
+.memberChangeInfoForm .wrapper .btn input{ /*SUBMIT BUTTON*/
+	display: inline-block; 
+	border-radius: 25px; 
+    color: #785655;
+	text-align: center; 
+	font-size: 20px;
+	padding: 12px; 
+	padding-left: 16px;
+	cursor: pointer; 
+	margin: 0px;
+	background-color:transparent;
+
+}
+	
+.wrapper .input_field i{
+	position: absolute;
+	top:11px;
+	left:11px;
+	color: #1d2120;
+	
+
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+	color: #1d2120;
+  }
+  ::-moz-placeholder { /* Firefox 19+ */
+   color: #1d2120;
+  }
+  :-ms-input-placeholder { /* IE 10+ */
+	color: #1d2120;
+  }

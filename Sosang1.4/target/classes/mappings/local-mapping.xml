@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="localDAOmap">
+
+	<select id="getMain_facilitesData" parameterType="adto" resultType="mfdto">
+	select 
+sum(gf.office_num + 
+gf.Bank_num + 
+gf.Hospital_num + 
+gf.clinic_num +
+ gf.DrugStore_num + 
+ gf.Kindergarden + 
+ gf.Elementary_School + 
+ gf. Middle_School + 
+ gf.High_School + 
+ gf.University) as main_facil
+       from Guest_facilities as gf
+       left join market as mk
+       on mk.m_code=gf.Business_code
+        where  ((gf.Standard_ym_code=2017 and gf.Standard_quarter_code=4) or (gf.Standard_ym_code=2018 and gf.Standard_quarter_code=4) or (gf.Standard_ym_code=2019 and gf.Standard_quarter_code=2)) and mk.area_name=#{area}  group by Standard_ym_code,
+       Standard_quarter_code;
+
+		       
+	</select>
+	<select id="getGuest_facilitiesData" parameterType="adto" resultType="mfdto">
+		select sum(gf.Department_Store + 
+					gf.Supermarket + 
+					gf.Theater + 
+					gf.Accommodation) as guest_facil
+    	   from Guest_facilities as gf
+    	   left join market as mk
+    	   on mk.m_code=gf.Business_code
+    	    where  ((gf.Standard_ym_code=2017 and gf.Standard_quarter_code=4) or (gf.Standard_ym_code=2018 and gf.Standard_quarter_code=4) or (gf.Standard_ym_code=2019 and gf.Standard_quarter_code=2)) and mk.area_name=#{area}  group by Standard_ym_code,
+       Standard_quarter_code;
+	
+	</select>
+	<select id="getTraffic_facilitiesData" parameterType="adto" resultType="mfdto">
+			select sum(gf.Airport + 
+				gf.Train_Station + 
+				gf.Bus_Station + 
+				gf.Subway_Station +
+				gf.Bus_Terminal) as traffic_facil
+       from Guest_facilities as gf
+       left join market as mk
+       on mk.m_code=gf.Business_code
+         where  ((gf.Standard_ym_code=2017 and gf.Standard_quarter_code=4) or (gf.Standard_ym_code=2018 and gf.Standard_quarter_code=4) or (gf.Standard_ym_code=2019 and gf.Standard_quarter_code=2)) and mk.area_name=#{area}  group by Standard_ym_code,
+       Standard_quarter_code;
+
+	</select>
+	<select id="getMain_facilitiesStatusData" parameterType="adto" resultType="mfdto">
+select gf.Standard_ym_code as standard_ym_code,
+sum(gf.Office_num) as office,
+sum(gf.Bank_num) as finance,
+sum(gf.Hospital_num + Clinic_num) as medical,
+sum(gf.University+gf.High_School+gf.Middle_School+gf.Elementary_School+gf.Kindergarden) as school,
+sum(gf.Department_Store+gf.Supermarket) as Large_Distribution,
+sum(gf.Theater) as culture,
+sum(gf.Accommodation) as accommodation,
+sum(gf.Airport+gf.Train_Station+gf.Bus_Terminal+gf.Subway_Station+gf.Bus_Station) as traffic,
+round(sum((gf.Office_num + gf.Bank_num + gf.Hospital_num + Clinic_num + gf.University + gf.High_School + gf.Middle_School + gf.Elementary_School + gf.Kindergarden)/4),2) as main_facilities_avg,
+round(sum((gf.Department_Store + gf.Supermarket + gf.Theater + gf.Accommodation + gf.Airport + gf.Train_Station + gf.Bus_Terminal + gf.Subway_Station + gf.Bus_Station)/4),2) as guest_facilities_avg
+from Guest_facilities as gf
+       left join market as mk
+       on mk.m_code=gf.Business_code
+        where  ((gf.Standard_ym_code=2017 and gf.Standard_quarter_code=4) or (gf.Standard_ym_code=2018 and gf.Standard_quarter_code=4) or (gf.Standard_ym_code=2019 and gf.Standard_quarter_code=2)) and mk.area_name=#{area}  group by Standard_ym_code,
+       Standard_quarter_code;
+
+	</select>
+	<select id="getSchoolData" parameterType="adto" resultType="mfdto">
+	select 
+gf.Standard_ym_code as Standard_ym_code,
+gf.Standard_quarter_code as Standard_quarter_code,
+sum(gf.University) as University, 
+sum(gf.High_School) as HighSchool,
+sum(gf.Middle_School) as Middle_School,
+sum(gf.Elementary_School) as Elementary_School,
+sum(gf.Kindergarden) as Kindergarden
+       from Guest_facilities as gf
+       left join market as mk
+       on mk.m_code=gf.Business_code
+       where gf.Standard_ym_code=#{select_year} and gf.Standard_quarter_code=#{select_quarter} and mk.area_name=#{area};
+
+	</select>
+	<select id="getTraffic_facilities_analysis_Data" parameterType="adto" resultType="mfdto">
+select count(c.Subway_Station) as subway_Station_cnt
+from (
+select Subway_Station, count(Subway_Station) 
+from subway_totalcustomerAVG 
+left join market as mk
+on mk.area_name =  subway_totalcustomerAVG.Area
+where Standard_ym_code=2019 and mk.area_name=#{area} 
+group by Subway_Station
+) as c;
+	</select>
+		<select id="getTraffic_facilities_analysis_Data2" parameterType="adto" resultType="mfdto">
+select
+sum(gf.Bus_Station) as bus_station
+       from Guest_facilities as gf
+       left join market as mk
+       on mk.m_code=gf.Business_code
+      where gf.Standard_ym_code=2019 and gf.Standard_quarter_code=2 and mk.area_name=#{area};
+	</select>
+	<select id="getResidential_facility_analysis_Data" parameterType="adto" resultType="apartdto">
+select
+sum(Family_total) as Family_total,
+sum(Apartment_total) as Apartment_total,
+sum(Non_apartment_total) as Non_apartment_total
+from apartment as ap left join market as mk
+on mk.m_code=ap.Business_code where ap.Standard_ym_code=#{select_year} and ap.Standard_quarter_code=#{select_quarter} and mk.area_name=#{area};
+
+	</select>
+	<select id="getResidential_facility_analysis_Data2" parameterType="adto" resultType="apartdto">
+select
+round((avg(Family_total)/avg(Family_total))*100) as Family_avg,  
+round((avg(Apartment_total)/avg(Family_total))*100,1) as Apartment_Avg,
+round((avg(Non_apartment_total)/avg(Family_total))*100,1) as Non_apartment_Avg
+from apartment as ap left join market as mk
+on mk.m_code=ap.Business_code where ap.Standard_ym_code=#{select_year} and ap.Standard_quarter_code=#{select_quarter} and mk.area_name=#{area};
+
+	</select>
+	<select id="getSubway_analysis_Data" parameterType="adto" resultType="mfdto">
+		<![CDATA[select standard_ym_code, Area , line, subway_Station, day_total_input_avg, day_total_output_avg, Year_total_input_avg,Year_total_output_avg from subway_totalcustomerAVG as st
+where st.standard_ym_code <= 2019 and st.Area=#{area};]]>
+		
+	</select>
+	<select id="getApartment_analysis_Data" parameterType="adto" resultType="apartdto">
+	select
+sum(Apartment_total) as Apartment_total, 
+sum(Apart_family) as Apart_family
+from apartment as ap left join market as mk
+on mk.m_code=ap.Business_code where  ((ap.Standard_ym_code=2017 and ap.Standard_quarter_code=4) or (ap.Standard_ym_code=2018 and ap.Standard_quarter_code=4) or (ap.Standard_ym_code=2019 and ap.Standard_quarter_code=2)) and mk.area_name=#{area}  group by Standard_ym_code,
+       Standard_quarter_code;
+
+	</select>
+	<select id="getArea_analysis_Data" parameterType="adto" resultType="apartdto">
+select 
+round(avg(ap.Area_66_under_households)) as Area_66_under_households,
+round(avg(ap.Area_66_households)) as Area_66_households,
+round(avg(ap.Area_99_households)) as Area_99_households,
+round(avg(ap.Area_132_households)) as Area_132_households,
+round(avg(ap.Area_165_households)) as Area_165_households,
+round(avg(ap.Avg_area)) as avg_area
+from apartment as ap left join market as mk
+on mk.m_code=ap.Business_code where ap.Standard_ym_code=#{select_year} and ap.Standard_quarter_code=#{select_quarter} and mk.area_name=#{area};
+
+	</select>
+<select id="getArea_analysis_Data2" parameterType="adto" resultType="apartdto">	
+	select 
+round(avg(ap.Area_66_under_households)/avg(Apart_family)*100,1) as Area_66_under_Avg,
+round(avg(ap.Area_66_households)/avg(Apart_family)*100,1) as Area_66_Avg,
+round(avg(ap.Area_99_households)/avg(Apart_family)*100,1) as Area_99_Avg,
+round(avg(ap.Area_132_households)/avg(Apart_family)*100,1) as Area_132_Avg,
+round(avg(ap.Area_165_households)/avg(Apart_family)*100,1) as Area_165_Avg,
+round(avg(ap.Apart_family)/avg(Apart_family)*100,1) as apart_avg
+from apartment as ap left join market as mk
+on mk.m_code=ap.Business_code where ap.Standard_ym_code=#{select_year} and ap.Standard_quarter_code=#{select_quarter} and mk.area_name=#{area};
+</select>
+	<select id="getPrice_analysis_Data" parameterType="adto" resultType="apartdto">
+select 
+round(avg(ap.Price_1milion_under)) as Price_1milion_under,
+round(avg(ap.Price_1milion)) as Price_1milion,
+round(avg(ap.Price_2milion)) as Price_2milion,
+round(avg(ap.Price_3milion)) as Price_3milion,
+round(avg(ap.Price_4milion)) as Price_4milion,
+round(avg(ap.Price_5milion)) as Price_5milion,
+round(avg(ap.Price_6milion)) as Price_6milion,
+round(avg(ap.Price_1milion_under + ap.Price_1milion+ap.Price_2milion+ap.Price_3milion+ap.Price_4milion+ap.Price_5milion+ap.Price_6milion)/7) as apart_Price_avg
+from apartment as ap left join market as mk
+on mk.m_code=ap.Business_code where ap.Standard_ym_code=#{select_year} and ap.Standard_quarter_code=#{select_quarter} and mk.area_name=#{area};
+	
+	</select>
+	
+	<select id="getPrice_analysis_Data2" parameterType="adto" resultType="apartdto">
+select 
+round((avg(ap.Price_1milion_under)/avg(ap.Apart_family))*100,1) as Price_1milion_under_Avg,
+round((avg(ap.Price_1milion)/avg(ap.Apart_family))*100,1) as Price_1milion_Avg,
+round((avg(ap.Price_2milion)/avg(ap.Apart_family))*100,1) as Price_2milion_Avg,
+round((avg(ap.Price_3milion)/avg(ap.Apart_family))*100,1) as Price_3milion_Avg,
+round((avg(ap.Price_4milion)/avg(ap.Apart_family))*100,1) as Price_4milion_Avg,
+round((avg(ap.Price_5milion)/avg(ap.Apart_family))*100,1) as Price_5milion_Avg,
+round((avg(ap.Price_6milion)/avg(ap.Apart_family))*100,1) as Price_6milion_Avg,
+round(avg(ap.Avg_Price)) as avg_price
+from apartment as ap left join market as mk
+on mk.m_code=ap.Business_code where ap.Standard_ym_code=#{select_year} and ap.Standard_quarter_code=#{select_quarter} and mk.area_name=#{area};
+	
+	</select>
+
+</mapper>

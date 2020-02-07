@@ -1,0 +1,66 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css?family=Josefin+Sans:400,400i,600,600i,700,700i&display=swap');
+
+@font-face { font-family: 'KBIZHanmaumGothic'; 
+	src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/KBIZHanmaumGothic.woff') 
+    format('woff'); font-weight: normal; font-style: normal; }
+    
+*{
+    margin:0;
+	padding:0;
+	box-sizing: border-box;
+	outline:none;
+	text-decoration:none;
+	font-family: 'KBIZHanmaumGothic','Josefin Sans', sans-serif;
+}
+body {
+	background:#f1c40f;
+}
+.wrapper{
+	max-width: 450px;
+	
+    margin: 0 auto;
+	margin-top: 16%;
+	margin-bottom:25%;
+	background: #fff;
+	padding: 60px 45px;
+	border-radius:20px;
+	
+}
+.wrapper .logoImg>img{
+    width: 100%;
+    padding: 0%;
+}
+.wrapper >h1{
+    text-align: center;
+    font-size: 25pt;
+    font-weight: bolder;
+    color: #785655;
+    
+}
+.wrapper .btnSpace{
+    text-align: center;
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+	margin-bottom: 10px;
+}
+#mainBtn{
+    display: inline-block; 
+	border-radius: 25px; 
+	background-color:#f1c40f; 
+	z-index: -1;
+	border: none;
+    color: #785655;
+	text-align: center; 
+	font-size: 20px;
+	padding: 20px; 
+	width: 200px;  
+	cursor: pointer; 
+	margin: 0px;
+}
+#mainBtn:hover {
+	font-size:larger;
+	color: 785655;
+    
+}

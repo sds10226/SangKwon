@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 다른 mapper와 중복되지 않도록 네임스페이스를 기재한다. -->
+<!-- MemberDAOImpl에 사용한 namespace와 일치하도록 한다. -->
+<mapper namespace="MemberDAO">
+
+	<!-- 아이디 중복검사 -->
+	<select id="checkOverId" parameterType="String" resultType="int">
+		select count(*) from customer where id= #{id}
+	</select>
+
+	<!-- 이메일 중복검사 -->
+	<select id="checkOverEmail" parameterType="String" resultType="int">
+		select count(*) from customer where email=#{email}
+	</select>
+
+	<!-- 회원 정보 수정 : 이메일 중복 검사 -->
+	<select id="checkModifyEmail" parameterType="memberDTO" resultType="int">
+		select count(*) from customer where email=#{email} and
+		id!=#{id};
+	</select>
+
+	<!-- 회원가입 : 비밀번호 암호화 -->
+	<insert id="insertMember" parameterType="memberDTO">
+		insert into customer
+		(name, tel, id, password, email)
+		values ( #{name}, #{tel}, #{id},
+		(HEX(AES_ENCRYPT(#{password}, #{id}))), #{email})
+	</insert>
+
+	<!-- 로그인 : 비밀번호 복호화 -->
+	<select id="login_check" parameterType="memberDTO" resultType="memberDTO">
+		select name, tel, id, password, email
+		from customer
+		where id = #{id} and AES_DECRYPT(UNHEX(password), #{id}) = #{password}
+	</select>
+
+	<!-- 회원선택 -->
+	<select id="selectMember" parameterType="memberDTO" resultType="memberDTO">
+		select name, tel, id, password, email
+		from customer
+		where id = #{id}
+	</select>
+
+	<!-- 회원정보 업데이트 : 비밀번호 제외 -->
+	<update id="updateMember" parameterType="memberDTO">
+		update customer
+		set name =#{name}, tel=#{tel}, email=#{email}
+		where id = #{id}
+	</update>
+	
+	<!-- 회원정보 업데이트 : 비밀번호 포함 : 비밀번호 암호화 -->
+	<update id="updateMemberWithPassword" parameterType="memberDTO">
+		update customer
+		set name =#{name}, tel=#{tel}, password=(HEX(AES_ENCRYPT(#{password}, #{id}))), email=#{email}
+		where id = #{id}
+	</update>
+
+	<!-- 회원탈퇴 -->
+	<delete id="deleteMember" parameterType="memberDTO">
+		DELETE FROM customer
+		where id = #{id}
+	</delete>
+
+	<!-- 아이디 찾기 -->
+	<select id="find_Id" parameterType="memberdto" resultType="String">
+		select id
+		from customer
+		where name = #{name} and email =#{email}
+	</select>
+	
+	<!-- 비밀번호 찾기 : 비밀번호 복호화 -->
+	<select id="find_Password" parameterType="java.util.Map" resultType="java.lang.String">
+		select AES_DECRYPT(UNHEX(password), #{id})
+		from customer
+		where id=#{id} and email=#{email}
+	</select>
+
+	<!-- 검색 정보 저장 -->
+	<insert id="reg_mylog" parameterType="mylogdto">
+		insert into mylog
+		(id, area, food, search_date)
+		values(#{id}, #{area}, #{food}, #{search_date})
+	</insert>
+	
+	<!-- 회원 검증 -->
+	<select id="checkPassword" parameterType="memberdto" resultType="int">
+		select count(*) 
+		from customer
+		where id = #{id} and AES_DECRYPT(UNHEX(password), #{id}) = #{password}
+	</select>
+
+
+</mapper>

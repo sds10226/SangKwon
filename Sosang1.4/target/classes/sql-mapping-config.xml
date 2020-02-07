@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<!-- 업종분석 -->
+		<typeAlias alias="storeDTO" type="com.cafe24.sosang.dto.StoreDTO" />
+		<typeAlias alias="resultDTO" type="com.cafe24.sosang.dto.ResultDTO" />
+		<!-- 매출분석 -->
+		<typeAlias alias="salesDTO" type="com.cafe24.sosang.dto.SalesDTO"/>
+		<typeAlias alias="salesAllDTO" type="com.cafe24.sosang.dto.SalesAllDTO"/>
+		<typeAlias alias="salesDayDTO" type="com.cafe24.sosang.dto.SalesDayDTO"/>
+		<!--인구분석  -->
+		<typeAlias alias="adto" type="com.cafe24.sosang.dto.AreaDTO"></typeAlias>
+		<typeAlias alias="qfdto" type="com.cafe24.sosang.dto.Quarter_FloatingPopDTO"></typeAlias>
+		<typeAlias alias="gafdto" type="com.cafe24.sosang.dto.GenderAndAge_FloatingPopDTO"></typeAlias>
+		<typeAlias alias="tfdto" type="com.cafe24.sosang.dto.Time_FloatingPopDTO"></typeAlias>
+		<typeAlias alias="wfdto" type="com.cafe24.sosang.dto.Weekly_FloatingPopDTO"></typeAlias>
+		<typeAlias alias="rdto" type="com.cafe24.sosang.dto.ResidencePopDTO"></typeAlias>
+		<typeAlias alias="smdto" type="com.cafe24.sosang.dto.SalleryManPopDTO"></typeAlias>
+		<!--지역분석  -->
+		<typeAlias alias="apartdto" type="com.cafe24.sosang.dto.ApartmentDTO"></typeAlias>
+		<typeAlias alias="mfdto" type="com.cafe24.sosang.dto.Main_FacilitiesDTO"></typeAlias>
+		<!-- 회원 관리 -->
+		<typeAlias alias="memberdto" type="com.cafe24.sosang.dto.MemberDTO"/>
+		<typeAlias alias="mylogdto" type="com.cafe24.sosang.dto.MylogDTO"/>
+	</typeAliases>
+
+
+	<mappers>
+		<!--인구분석  -->
+		<mapper resource="mappings/population-mapping.xml" />
+		<!--지역분석  -->
+		<mapper resource="mappings/local-mapping.xml" />
+		<!--종합분석  -->
+		<mapper resource="mappings/overall-mapping.xml" />
+		<!--업종분석  -->
+		<mapper resource="mappings/store-mapping.xml" />
+		<!--매출분석  -->
+		<mapper resource="mappings/sales-mapping.xml" />
+		<!-- 회원 관리 -->
+		<mapper resource="mappings/member-mapping.xml"/>
+	</mappers>
+</configuration>

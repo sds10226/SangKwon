@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+<mapper namespace="org.sales.mappers.sales">
+	
+	<select id="selectSalesFiv" resultType="salesDTO" parameterType="adto">
+		select (SUM(s1.thsmon_selng_amt)+SUM(s2.thsmon_selng_amt))/2 as thsmon_selng_amt, 
+		(SUM(s1.thsmon_selng_co)+SUM(s2.thsmon_selng_co))/2 as thsmon_selng_co
+		from sales_2019_1 s1 
+		join sales_2019_2 s2 
+		where s1.trdar_cd in (select m_code from market where area_name = #{area}) 
+		and s1.svc_induty_cd_nm = #{food} 
+		and s1.trdar_cd = s2.trdar_cd 
+		and s1.svc_induty_cd_nm = s2.svc_induty_cd_nm
+	</select>
+	<select id="selectSalesFou" resultType="salesDTO" parameterType="adto">
+		select (SUM(s1.thsmon_selng_amt)+SUM(s2.thsmon_selng_amt))/2 as thsmon_selng_amt, 
+		(SUM(s1.thsmon_selng_co)+SUM(s2.thsmon_selng_co))/2 as thsmon_selng_co
+		from sales_2018_3 s1 
+		join sales_2018_4 s2 
+		where s1.trdar_cd in (select m_code from market where area_name = #{area}) 
+		and s1.svc_induty_cd_nm = #{food} 
+		and s1.trdar_cd = s2.trdar_cd 
+		and s1.svc_induty_cd_nm = s2.svc_induty_cd_nm
+	</select>
+	<select id="selectSalesThr" resultType="salesDTO" parameterType="adto">
+		select (SUM(s1.thsmon_selng_amt)+SUM(s2.thsmon_selng_amt))/2 as thsmon_selng_amt, 
+		(SUM(s1.thsmon_selng_co)+SUM(s2.thsmon_selng_co))/2 as thsmon_selng_co
+		from sales_2018_1 s1 
+		join sales_2018_2 s2 
+		where s1.trdar_cd in (select m_code from market where area_name = #{area}) 
+		and s1.svc_induty_cd_nm = #{food} 
+		and s1.trdar_cd = s2.trdar_cd 
+		and s1.svc_induty_cd_nm = s2.svc_induty_cd_nm
+	</select>
+	<select id="selectSalesTwo" resultType="salesDTO" parameterType="adto">
+		select (SUM(s1.thsmon_selng_amt)+SUM(s2.thsmon_selng_amt))/2 as thsmon_selng_amt, 
+		(SUM(s1.thsmon_selng_co)+SUM(s2.thsmon_selng_co))/2 as thsmon_selng_co
+		from sales_2017_3 s1 
+		join sales_2017_4 s2 
+		where s1.trdar_cd in (select m_code from market where area_name = #{area}) 
+		and s1.svc_induty_cd_nm = #{food} 
+		and s1.trdar_cd = s2.trdar_cd 
+		and s1.svc_induty_cd_nm = s2.svc_induty_cd_nm
+	</select>
+	<select id="selectSalesOne" resultType="salesDTO" parameterType="adto">
+		select (SUM(s1.thsmon_selng_amt)+SUM(s2.thsmon_selng_amt))/2 as thsmon_selng_amt, 
+		(SUM(s1.thsmon_selng_co)+SUM(s2.thsmon_selng_co))/2 as thsmon_selng_co
+		from sales_2017_1 s1 
+		join sales_2017_2 s2 
+		where s1.trdar_cd in (select m_code from market where area_name = #{area}) 
+		and s1.svc_induty_cd_nm = #{food} 
+		and s1.trdar_cd = s2.trdar_cd 
+		and s1.svc_induty_cd_nm = s2.svc_induty_cd_nm
+	</select>
+	
+	<update id="updateSalesFiv" parameterType="salesDTO">
+		update sales_all set amt = #{thsmon_selng_amt} , co = #{thsmon_selng_co} where cnt=5
+	</update>
+	<update id="updateSalesFou" parameterType="salesDTO">
+		update sales_all set amt = #{thsmon_selng_amt} , co = #{thsmon_selng_co} where cnt=4
+	</update>
+	<update id="updateSalesThr" parameterType="salesDTO">
+		update sales_all set amt = #{thsmon_selng_amt} , co = #{thsmon_selng_co} where cnt=3
+	</update>
+	<update id="updateSalesTwo" parameterType="salesDTO">
+		update sales_all set amt = #{thsmon_selng_amt} , co = #{thsmon_selng_co} where cnt=2
+	</update>
+	<update id="updateSalesOne" parameterType="salesDTO">
+		update sales_all set amt = #{thsmon_selng_amt} , co = #{thsmon_selng_co} where cnt=1
+	</update>
+	
+	<select id="selectSalesAll" resultType="salesAllDTO">
+		select part, amt, co from sales_all
+	</select>
+	
+	<select id="selectSalesData" resultType="salesDTO" parameterType="adto">
+		select AVG(mdwk_selng_amt) as mdwk_selng_amt, AVG(wkend_selng_amt) as wkend_selng_amt, AVG(mon_selng_amt) as mon_selng_amt,
+		AVG(tues_selng_amt) as tues_selng_amt, AVG(wed_selng_amt) as wed_selng_amt, AVG(thur_selng_amt) as thur_selng_amt,
+		AVG(fri_selng_amt) as fri_selng_amt, AVG(sat_selng_amt) as sat_selng_amt, AVG(sun_selng_amt) as sun_selng_amt, 
+		AVG(mdwk_selng_rate) as mdwk_selng_rate, AVG(wkend_selng_rate) as wkend_selng_rate, AVG(mon_selng_rate) as mon_selng_rate,
+		AVG(tues_selng_rate) as tues_selng_rate, AVG(wed_selng_rate) as wed_selng_rate, AVG(thur_selng_rate) as thur_selng_rate,
+		AVG(fri_selng_rate) as fri_selng_rate, AVG(sat_selng_rate) as sat_selng_rate, AVG(sun_selng_rate) as sun_selng_rate,
+		AVG(tmzon_00_06_selng_amt) as tmzon_00_06_selng_amt, AVG(tmzon_06_11_selng_amt) as tmzon_06_11_selng_amt, 
+		AVG(tmzon_11_14_selng_amt) as tmzon_11_14_selng_amt, AVG(tmzon_14_17_selng_amt) as tmzon_14_17_selng_amt, 
+		AVG(tmzon_17_21_selng_amt) as tmzon_17_21_selng_amt, AVG(tmzon_21_24_selng_amt) as tmzon_21_24_selng_amt, 
+ 		AVG(tmzon_00_06_selng_rate) as tmzon_00_06_selng_rate, AVG(tmzon_06_11_selng_rate) as tmzon_06_11_selng_rate, 
+ 		AVG(tmzon_11_14_selng_rate) as tmzon_11_14_selng_rate, AVG(tmzon_14_17_selng_rate) as tmzon_14_17_selng_rate, 
+ 		AVG(tmzon_17_21_selng_rate) as tmzon_17_21_selng_rate, AVG(tmzon_21_24_selng_rate) as tmzon_21_24_selng_rate,
+		AVG(ml_selng_amt) as ml_selng_amt, AVG(fml_selng_amt) as fml_selng_amt, AVG(agrde_10_selng_amt) as agrde_10_selng_amt, 
+		AVG(agrde_20_selng_amt) as agrde_20_selng_amt, AVG(agrde_30_selng_amt) as agrde_30_selng_amt, 
+		AVG(agrde_40_selng_amt) as agrde_40_selng_amt, AVG(agrde_50_selng_amt) as agrde_50_selng_amt,
+		AVG(agrde_60_above_selng_amt) as agrde_60_above_selng_amt, AVG(ml_selng_rate) as ml_selng_rate, 
+		AVG(fml_selng_rate) as fml_selng_rate, AVG(agrde_10_selng_rate) as agrde_10_selng_rate, 
+		AVG(agrde_20_selng_rate) as agrde_20_selng_rate, AVG(agrde_30_selng_rate) as agrde_30_selng_rate, 
+		AVG(agrde_40_selng_rate) as agrde_40_selng_rate, AVG(agrde_50_selng_rate) as agrde_50_selng_rate, 
+		AVG(agrde_60_above_selng_rate) as agrde_60_above_selng_rate 
+		from sales_2019_2 where svc_induty_cd_nm = #{food} and trdar_cd in 
+		(select m_code from market where area_name = #{area})
+	</select>
+	
+	<update id="updatesalesDayMon" parameterType="salesDTO">
+		update sales_day set amt = #{mon_selng_amt} , rate = #{mon_selng_rate} where cnt=3;
+	</update>
+	<update id="updatesalesDayTue" parameterType="salesDTO">
+		update sales_day set amt = #{tues_selng_amt} , rate = #{tues_selng_rate} where cnt=4;
+	</update>
+	<update id="updatesalesDayWed" parameterType="salesDTO">
+		update sales_day set amt = #{wed_selng_amt} , rate = #{wed_selng_rate} where cnt=5;
+	</update>
+	<update id="updatesalesDayThu" parameterType="salesDTO">
+		update sales_day set amt = #{thur_selng_amt} , rate = #{thur_selng_rate} where cnt=6;
+	</update>
+	<update id="updatesalesDayFri" parameterType="salesDTO">
+		update sales_day set amt = #{fri_selng_amt} , rate = #{fri_selng_rate} where cnt=7;
+	</update>
+	<update id="updatesalesDaySat" parameterType="salesDTO">
+		update sales_day set amt = #{sat_selng_amt} , rate = #{sat_selng_rate} where cnt=8;
+	</update>
+	<update id="updatesalesDaySun" parameterType="salesDTO">
+		update sales_day set amt = #{sun_selng_amt} , rate = #{sun_selng_rate} where cnt=9;
+	</update>
+	
+	<select id="selectSalesDay" resultType="salesDayDTO">
+		select part, amt, rate from sales_day
+	</select>
+	
+	<update id="updatesalesTimeFir" parameterType="salesDTO">
+		update sales_time set amt = #{tmzon_00_06_selng_amt} , rate = #{tmzon_00_06_selng_rate} where cnt=1
+	</update>
+	<update id="updatesalesTimeSec" parameterType="salesDTO">
+		update sales_time set amt = #{tmzon_06_11_selng_amt} , rate = #{tmzon_06_11_selng_rate} where cnt=2
+	</update>
+	<update id="updatesalesTimeThi" parameterType="salesDTO">
+		update sales_time set amt = #{tmzon_11_14_selng_amt} , rate = #{tmzon_11_14_selng_rate} where cnt=3
+	</update>
+	<update id="updatesalesTimeFou" parameterType="salesDTO">
+		update sales_time set amt = #{tmzon_14_17_selng_amt} , rate = #{tmzon_14_17_selng_rate} where cnt=4
+	</update>
+	<update id="updatesalesTimeFif" parameterType="salesDTO">
+		update sales_time set amt = #{tmzon_17_21_selng_amt} , rate = #{tmzon_17_21_selng_rate} where cnt=5
+	</update>
+	<update id="updatesalesTimeSix" parameterType="salesDTO">
+		update sales_time set amt = #{tmzon_21_24_selng_amt} , rate = #{tmzon_21_24_selng_rate} where cnt=6
+	</update>
+	
+	<select id="selectsalesTime" resultType="salesDayDTO">
+		select part, amt, rate from sales_time
+	</select>
+	
+	<update id="updatesalesAgeM" parameterType="salesDTO">
+		update sales_age set amt = #{ml_selng_amt} , rate = #{ml_selng_rate} where cnt=1
+	</update>
+	<update id="updatesalesAgeFm" parameterType="salesDTO">
+		update sales_age set amt = #{fml_selng_amt} , rate = #{fml_selng_rate} where cnt=2
+	</update>
+	<update id="updatesalesAgeOne" parameterType="salesDTO">
+		update sales_age set amt = #{agrde_10_selng_amt} , rate = #{agrde_10_selng_rate} where cnt=3
+	</update>
+	<update id="updatesalesAgeTwo" parameterType="salesDTO">
+		update sales_age set amt = #{agrde_20_selng_amt} , rate = #{agrde_20_selng_rate} where cnt=4
+	</update>
+	<update id="updatesalesAgeThr" parameterType="salesDTO">
+		update sales_age set amt = #{agrde_30_selng_amt} , rate = #{agrde_30_selng_rate} where cnt=5
+	</update>
+	<update id="updatesalesAgeFor" parameterType="salesDTO">
+		update sales_age set amt = #{agrde_40_selng_amt} , rate = #{agrde_40_selng_rate} where cnt=6
+	</update>
+	<update id="updatesalesAgeFiv" parameterType="salesDTO">
+		update sales_age set amt = #{agrde_50_selng_amt} , rate = #{agrde_50_selng_rate} where cnt=7
+	</update>
+	<update id="updatesalesAgeSix" parameterType="salesDTO">
+		update sales_age set amt = #{agrde_60_above_selng_amt} , rate = #{agrde_60_above_selng_rate} where cnt=8
+	</update>
+	
+	<select id="selectSalesGen" resultType="salesDayDTO">
+		select part, amt from sales_age where cnt in (1,2)
+	</select>
+	
+	<select id="selectSalesAge" resultType="salesDayDTO">
+		select part, rate from sales_age where cnt in (3,4,5,6,7,8)
+	</select>
+	
+</mapper>

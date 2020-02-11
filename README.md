@@ -10,7 +10,7 @@ Cafe24 Hosting : http://sds10226.cafe24.com
 3. MariaDB
 4. STS4
 5. Apatche Tomcat
-6. Browser : Chrome, IE, FireFox, Edge
+6. Browser : Chrome, IE11, FireFox, Edge
 
 #### 사용 주요기술
 1. JAVA
